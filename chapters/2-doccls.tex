@@ -145,3 +145,39 @@ Table~\ref{table:pages} 詳列了摘要, 誌謝等頁面的位置.
 我自己的習慣是把論文的每一個 chapter 獨立成一個 .tex 檔, 放在 \textit{chapters/} 下.
 而附錄也是寫成獨立的 .tex 檔, 放在另一個資料夾下, 方便管理.
 請參考此 template 的 \textit{chapters/} 與 \textit{appx/} 兩個資料夾.
+
+\chapter{背景與相關工作}
+
+\section{背景}
+\subsection{大型語言模型的挑戰}
+大型語言模型（LLMs）的突破推動了多領域的應用，例如GPT、Gemini等，但龐大的推理成本成為限制應用普及的主要瓶頸。現有解決方案可分為訓練階段的參數擴展與推理階段的計算資源放大，前者成本極高，後者則仍有潛力可挖掘，例如lensemble、推理協作、分布式推理等方法。
+
+\subsection{On-device與Edge端AI的需求與現況}
+隨著小型LLM性能大幅提升（如Deepseek-R1-Distilled-Qwen-1.5B等），Edge/本地設備上執行複雜任務成為可能，但在數據密集型推理、長文本推理等挑戰下，單靠本地模型仍難以達到雲端前沿模型的品質。現實場景需求包括成本敏感、隱私要求、延遲限制等，使得「邊緣-雲端協作」成為重要趨勢。
+
+\subsection{MoA推論}
+多層代理（MoA, Multi-Layer Agents）推論方法近年受到關注，包含基本MoA、Self-MoA等架構。這些方法在回應選擇、早停、角色分配等方面各有優勢。下表比較了不同MoA相關方法：
+
+\begin{table}[h]
+\centering
+\caption{MoA方法比較}
+\begin{tabular}{|l|l|l|}
+\hline
+Paper & Concept & Link \\
+\hline
+MoA & Multi-Layer Agents inference & \url{https://arxiv.org/abs/2406.04692} \\
+SMoA & Response Selection, Early Stopping, Role Assignment & \url{https://arxiv.org/abs/2411.03284} \\
+Self-MoA & agents re-sampling & \url{https://arxiv.org/abs/2502.00674} \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{相關工作}
+\subsection{強化學習與監督式微調}
+現有如Deepseek R1、Open R1等方法，結合強化學習與監督式微調以提升模型表現。
+
+\subsection{推論最佳化}
+推論最佳化技術如剪枝（pruning）與量化（quantization），能有效降低模型運算需求，提升推論效率。
+
+\subsection{叢集推論}
+叢集推論（Cluster inference）則透過多設備協作，進一步提升推論效能與可靠性。
