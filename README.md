@@ -1,29 +1,54 @@
 # 陽明交通大學碩博士論文 XeLaTeX 模板
 
-[nycu-thesis]((https://github.com/indigo40123/NYCU-Thesis-Template)
+[nycu-thesis](https://github.com/indigo40123/NYCU-Thesis-Template)
 Template are developed based on XeLaTeX + xeCJK.
 
 Online version powered by Overleaf could be found here:
 https://www.overleaf.com/latex/templates/national-yang-ming-chiao-tung-university-nycu-thesis-template/zgjfrxhcdcmj
 
+## 目錄結構說明
+
+- `main.tex`：主控檔，串接所有內容
+- `chapters/`：各章節內容（建議每章一檔，如 1-intro.tex）
+- `abs/`：中英文摘要
+- `appx/`：附錄
+- `author/`：作者資訊
+- `figures/`：所有圖檔
+- `tables/`：所有表格
+- `bib/`：參考文獻
+- `config/`：格式、字型等設定
+- `notes/`：研究筆記（可自行新增）
+- `drafts/`：草稿（可自行新增）
+- `scripts/`：自動化腳本（可自行新增）
+
 ## 下載
   你可以 clone 這個 repos, 或是到[這裡](https://github.com/indigo40123/NYCU-Thesis-Template)下載最新版本
 
 ## 快速上手
-* Use command line
 
+- 完整編譯論文：
+  ```bash
+  make
   ```
-  $ make
+- 清除中間檔：
+  ```bash
+  make clean
+  ```
+- 只預覽 intro 章節：
+  ```bash
+  xelatex preview-intro.tex
   ```
 
-* Change the xelatex option in IDE, then build main.tex
+## 章節分檔建議
 
-  ```
-  xelatex -synctex=1 -shell-escape -interaction=nonstopmode %.tex
-  ```
-  * thesis.cls 會根據你目前使用的作業系統選擇要使用的中文字型, 請設定 -shell-escape 開啟這個功能.
+- 每章一檔，檔名建議 `1-intro.tex`、`2-background.tex` ...
+- main.tex 用 `\input{chapters/1-intro.tex}` 串接
+- 章節檔案只寫內容，不要有 `\documentclass`、`\begin{document}`、`\end{document}`
 
-    (這樣你和你的指導教授用不同作業系統寫論文時, 就不用每次重新設定中文字型啦)
+## 進階
+
+- 進階用法、細節請參考 `README.pdf`
+- 若需自動化腳本、Makefile 增強、VSCode 設定等，請見 scripts/ 或洽詢作者
 
 ## 說明
    進階的使用教學請參考 [README.pdf](https://github.com/indigo40123/NYCU-Thesis-Template/README.pdf)
