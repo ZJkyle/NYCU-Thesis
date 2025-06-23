@@ -1,3 +1,75 @@
 \chapter{Proposed Method}
 
-% 這裡撰寫方法內容 
+本章節詳細介紹本研究所提出的多SLM協作架構的設計與實現方法。該架構旨在解決邊緣設備上SLM推理準確率不足的問題，通過自適應任務分解和協作聚合機制來提升整體性能。
+
+\section{系統架構概述}
+
+本研究所提出的多SLM協作架構採用主從式設計，如圖~\ref{fig:system_architecture} 所示。該架構包含一個主節點和多個工作節點，通過智能任務分解和協作聚合機制來實現高效的邊緣推理。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[height=!,width=0.8\linewidth,keepaspectratio=true]%
+  {figures/System_arch.png}
+  \caption[多SLM協作架構系統設計]{多SLM協作架構系統設計圖，展示主節點與工作節點之間的協作關係以及任務分解與聚合流程}
+  \label{fig:system_architecture}
+\end{figure}
+
+系統架構的主要組件包括：
+
+\begin{itemize}
+    \item \textbf{主節點（Master Node）}：負責接收用戶查詢、進行任務分解、協調工作節點執行，以及聚合最終結果
+    \item \textbf{工作節點（Worker Nodes）}：執行分配的子任務，運行不同的SLM模型，並將中間結果返回給主節點
+    \item \textbf{任務分解器（Task Decomposer）}：根據硬體配置和任務複雜度，將用戶查詢分解為適合的子任務
+    \item \textbf{結果聚合器（Result Aggregator）}：整合來自多個工作節點的中間結果，生成最終輸出
+\end{itemize}
+
+\section{自適應粒度任務分解機制}
+
+自適應粒度任務分解是本架構的核心創新之一。該機制能夠根據邊緣設備的硬體配置（如記憶體大小、CPU核心數）動態調整任務分解的粒度，以達到最佳的推理效率。
+
+任務分解過程包括以下步驟：
+
+\begin{enumerate}
+    \item \textbf{硬體資源評估}：分析當前設備的可用記憶體、CPU使用率等資源狀況
+    \item \textbf{任務複雜度分析}：評估用戶查詢的複雜程度，包括文本長度、推理深度等
+    \item \textbf{粒度決策}：根據資源狀況和任務複雜度，決定最適合的分解粒度
+    \item \textbf{子任務生成}：將原始查詢分解為多個可以並行執行的子任務
+\end{enumerate}
+
+\section{協作式聚合機制}
+
+協作式聚合機制確保了多個SLM模型協作的有效性。該機制採用主從式架構，主節點負責協調和聚合，工作節點專注於執行特定的推理任務。
+
+聚合過程的主要特點：
+
+\begin{itemize}
+    \item \textbf{容錯性}：即使部分工作節點出現問題，系統仍能基於可用的結果生成輸出
+    \item \textbf{一致性}：通過一致性檢查機制，確保最終結果的準確性和可靠性
+    \item \textbf{可擴展性}：支持動態添加或移除工作節點，適應不同的硬體配置
+\end{itemize}
+
+\section{端到端推論流程}
+
+完整的端到端推論流程包括以下階段：
+
+\subsection{初始化階段}
+系統啟動時，主節點會掃描可用的工作節點，評估其硬體配置和SLM模型能力，建立節點註冊表。
+
+\subsection{查詢處理階段}
+當接收到用戶查詢時，主節點首先進行任務分析，然後根據自適應粒度策略將查詢分解為子任務。
+
+\subsection{並行執行階段}
+分解後的子任務被分配到不同的工作節點，各節點並行執行SLM推理，並將中間結果返回給主節點。
+
+\subsection{結果聚合階段}
+主節點收集所有工作節點的中間結果，通過協作聚合機制生成最終輸出，並返回給用戶。
+
+\section{實現細節}
+
+本架構基於Llama.cpp框架實現，充分利用了其高效的推理引擎和靈活的模型載入機制。主要實現特點包括：
+
+\begin{itemize}
+    \item \textbf{輕量級通信}：使用高效的RPC協議進行節點間通信，最小化網絡開銷
+    \item \textbf{動態負載均衡}：根據各節點的當前負載情況，動態調整任務分配
+    \item \textbf{資源監控}：實時監控各節點的資源使用情況，確保系統穩定性
+\end{itemize} 

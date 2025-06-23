@@ -567,61 +567,40 @@
 % Cover Page
 %-------------------------------------------------------------------------------
 
-\def\coverpage
-{
+\def\coverpage{
   \thispagestyle{empty}%
-% University, institute, and title
   \begin{center}
-    % University
-    \fontsize{18}{27}{\@universityzh}\\
-    % Institute
-    \fontsize{18}{27}{\@institutezh}\\
-    % Thesis type
-    \fontsize{18}{27}{\@thesistypezh}\\
-    \ifTHESISOPTIONdraft
-      %\makebox[2cm][s]{\textbf{\textsf{初稿}}}\\
-      \fontsize{18}{27}{初稿}\\
+    {\fontsize{18}{27}\selectfont \@universityzh}\\
+    {\fontsize{18}{27}\selectfont \@institutezh}\\
+    {\fontsize{18}{27}\selectfont \@thesistypezh}%
+    \ifTHESISOPTIONdraft\\
+      {\fontsize{18}{27}\selectfont 初稿}%
     \fi
     \vspace{2\baselineskip}
-    
-    \fontsize{14}{21}{\@institute}\\
-    \fontsize{16}{24}{\@university}\\
-    \fontsize{16}{24}{\@thesistype}\\
-    \vspace{3\baselineskip} % set single spacing
-
-    % Chinese title
-    \fontsize{18}{27}{\@titlezh}\\
+    {\fontsize{14}{21}\selectfont \@institute}\\
+    {\fontsize{16}{24}\selectfont \@university}\\
+    {\fontsize{16}{24}\selectfont \@thesistype}
+    \vspace{3\baselineskip}
+    {\fontsize{18}{27}\selectfont \@titlezh}\\
     \vspace{0.75\baselineskip}
-    % English title
-    \fontsize{18}{27}{\@title}\\
-    \vspace{3\baselineskip} % set single spacing
-  
-% Author & advisors
-  %\begin{flushleft}%
+    {\fontsize{18}{27}\selectfont \@title}
+    \vspace{3\baselineskip}
     \singlespacing
-    \fontsize{18}{27}
-    \begin{center}
-    \begin{tabular}{c}%
-    % Author
-      {研究生\ :} {\@authorzh \ (\@author)} \vspace{1em}\\%
-    % Advisor
-      {指導教授\ :}{\@advisorzh \ (\@advisor)} \vspace{1em}\\%
-    % Co-Advisor A
-      \ifx \@coadvisorAzh \@empty \else
-        {\@coadvisorAzh(\@coadvisorA)} \vspace{1em}\\%
-      \fi
-    % Co-Advisor B
-      \ifx \@coadvisorBzh \@empty \else
-        {\@coadvisorBzh(\@coadvisorB)} \vspace{1em}\\%
-      \fi
-    \end{tabular}%
-    \end{center}
-  %\end{flushleft}
-  % Submission date in Chinese
-  \vspace{3cm}
-  
-  \fontsize{18}{27}\Large{\@nation} \Large{\@yearmonth}\\
-  \LARGE{\@degreemonth} \ \LARGE{\@degreeyear} \\
+    {\fontsize{18}{27}\selectfont
+      \begin{tabular}{c}
+        研究生\ :\ \@authorzh\ (\@author) \\
+        指導教授\ :\ \@advisorzh\ (\@advisor)%
+        \ifx \@coadvisorAzh \@empty\else \\
+          \@coadvisorAzh(\@coadvisorA)%
+        \fi
+        \ifx \@coadvisorBzh \@empty\else \\
+          \@coadvisorBzh(\@coadvisorB)%
+        \fi
+      \end{tabular}
+    }
+    \vspace{3cm}
+    {\fontsize{18}{27}\selectfont \@nation~\@yearmonth}\\
+    {\LARGE \@degreemonth~\@degreeyear}
   \end{center}
 }
 
@@ -661,7 +640,7 @@
   % English name
     \begin{tabular}{ll}%
       \large{Student:}&{\large{\@author}}\vspace{0.5em}\\%
-      \large{Advisor:}&{Dr. \large{\@advisor}}\\%
+      \large{Advisor:}&{\large{\@advisor}}\\%
       \ifx \@coadvisorA \@empty \else
         &{\large{\@coadvisorA}}\\%
       \fi
@@ -683,19 +662,18 @@
     \vfill
 % Submission description in English
     \ifTHESISOPTIONdraft
-      \centerline{{A Thesis Draft}} \vspace{-1.0em}%
+      \centerline{{A Thesis Draft}}\\[1em]%
     \else
-      \centerline{{A Thesis}} \vspace{-1.0em}%
+      \centerline{{A Thesis}}\\[1em]%
     \fi
-    Submitted to {\@institute} \vspace{-1.0em}\\
-    \@college \vspace{-1.0em}\\
-    \@university \vspace{-1.0em}\\
-    in partial Fulfilment of the Requirements \vspace{-1.0em}\\
-    for the Degree of \vspace{-1.0em}\\
-    \@degree \vspace{-1.0em}\\
-    in \vspace{-1.0em}\\
-    \@field \vspace{-1.0em} \\
-    \vspace{\baselineskip}
+    \centerline{Submitted to \@institute}\\[0.7em]
+    \centerline{\@college}\\[0.7em]
+    \centerline{\@university}\\[1em]
+    \centerline{in Partial Fulfillment of the Requirements}\\[0.7em]
+    \centerline{for the Degree of}\\[0.7em]
+    \centerline{Master of Science}\\[0.7em]
+    \centerline{in}\\[0.7em]
+    \centerline{\@field}\\[1em]
     \vfill
 % Submission date and location
     {{\@degreemonth} {\@degreeyear}}\\
@@ -763,7 +741,7 @@
 % \maketitle Redefinition
 %-------------------------------------------------------------------------------
 
-\def\maketitle{{
+\def\maketitle{
 \ifTHESISOPTIONreview\else
 % Cover page
   \coverpage
@@ -792,7 +770,7 @@
   %  \copyrightpage
   %\fi
 \fi
-}}
+}
 
 %-------------------------------------------------------------------------------
 % Chinese Abstract
