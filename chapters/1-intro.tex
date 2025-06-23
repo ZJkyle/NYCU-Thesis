@@ -1,84 +1,47 @@
-\chapter{緒論}
+\chapter{Introduction}
+\label{chapter:intro}
 
-\section{研究動機}
-隨著人工智慧技術的快速發展，大型語言模型（LLM）已廣泛應用於日常生活中的複雜問題解決。然而，現有的雲端推論方式高度依賴穩定且快速的網路連線，這不僅限制了模型的可用性，也對用戶隱私帶來潛在風險。此外，雲端API的使用成本高昂，特別是在長文本或資料密集型任務下，每次查詢的費用可能超過15美元。另一方面，隨著嵌入式系統（如Raspberry Pi 5、Jetson Orin Nano）等邊緣設備的普及，雖然這些設備僅配備有限的記憶體（約8GB RAM），但用戶對於在本地執行LLM的需求日益增加，如何在資源受限的環境下有效部署語言模型，成為重要的研究議題。
+\section{Motivation}
+Large Language Models (LLMs) have revolutionized natural language processing by delivering strong performance across complex reasoning and understanding tasks. These capabilities have catalyzed the widespread adoption of LLMs in domains ranging from healthcare and finance to software engineering. However, the dominant paradigm for LLM inference remains tightly coupled to powerful, centralized cloud infrastructure.
 
-\section{問題定義}
-由於記憶體與運算資源有限，LLM難以直接部署於邊緣設備，而小型語言模型（SLM）在處理複雜、即時任務時也面臨顯著挑戰。首先，SLM在進階推理、程式碼生成及特定領域應用上的準確度與反應速度往往不足，且單一SLM難以同時應對多樣化的任務需求與長文本理解。例如，基於DeepSeek-R1-Distill-Llama-8B的解決方案，其推理準確度較DeepSeel-R1低約40%。此外，分散式或多設備SLM推論雖可提升整體容量，但在實務上，裝置間的通訊延遲常成為效能瓶頸。例如，透過RPC協定在llama.cpp上進行LLM推論時，吞吐量僅為原本的1/13。
+This cloud-centric approach introduces several practical and strategic challenges:
 
-\section{研究貢獻}
-本論文的主要貢獻如下：
-\begin{itemize}
-    \item \textbf{自適應粒度任務分解：} 提出一種自適應粒度的排程器，能根據邊緣設備的硬體配置與資源限制，動態將用戶查詢分解為子任務與內容區塊，提升推論效率。
-    \item \textbf{協作式聚合機制：} 設計主從式SLM架構，主節點負責聚合多個工作節點的中間結果，並產生最終輸出，即使部分節點回應不完整，仍能確保結果的穩健性與一致性。
-    \item \textbf{端到端SLM推論流程：} 實作完整的本地化SLM推論流程，涵蓋任務分解、平行執行與結果聚合，證明複雜LLM任務可在無需雲端資源的情況下於邊緣設備上完成。
-\end{itemize}
+\textbf{Connectivity Dependency:} Reliable, high-bandwidth internet access is required to interact with cloud-based LLM APIs, rendering this approach unsuitable for mobile, remote, or intermittently connected environments.
 
-本 template 參考國立陽明交通大學註冊組所提供的 ``學位論文格式" (https://lsemba.nycu.edu.tw/wp-content/uploads/2021/03/國立陽明交通大學研究生學位論文格式規範NEW.pdf) 修改了先前楊威利的NCTU 論文模板寫成.
-因為本 template 使用 XeCJK 來提供中文的論文寫作環境, 所以必須使用 XeLaTeX 編譯.
+\textbf{Privacy Concerns:} Transmitting sensitive or proprietary user data to third-party servers can conflict with privacy requirements or regulatory constraints, especially in domains such as healthcare or personal productivity.
 
-\section{環境設定}
+\textbf{Cost and Scalability:} The operational expense of invoking commercial LLM APIs can quickly become prohibitive, particularly for applications requiring long-context reasoning or high query volume, where costs scale linearly with usage.
 
-推薦使用的編譯環境 (LaTeX core + LaTeX editor + Bibliography editor)
+The recent emergence of Small Language Models (SLMs) offers a promising path toward democratizing language intelligence. By enabling on-device or edge deployment, SLMs address the critical needs of responsiveness, privacy, and autonomy. However, practical edge devices (e.g., Raspberry Pi 5, Jetson Orin Nano) are commonly equipped with constrained physical memory (typically 4–8GB RAM), which limits the feasible model size to around 7 billion parameters—even with optimization.
 
-\begin{itemize}
-\item \textbf{Windows \& Linux}: TeX Live + TeXmaker + JabRef
-\item \textbf{Mac OS X}: MacTeX + TeXShop + JabRef
-\end{itemize}
+This hardware bottleneck presents a central research gap:
 
-\section{開使寫作}
+\textit{How can we harness the benefits of on-device inference—privacy, responsiveness, and cost-effectiveness—while overcoming the inherent resource limitations of edge hardware?}
 
-請用你的 LaTeX editor 打開 ``\textbf{main.tex}".
-\textbf{main.tex} 是本 template 的主文件 (本文件亦是由編譯 main.tex 產生).
-請在 \textbf{main.tex} 加入新的 chapter, 或是由此開啟其他的 chapter files or configuration files (如果你使用的 editor 支援的話), etc.
+Furthermore, while smaller models can handle simple tasks, enabling SLMs to support complex, data-intensive reasoning remains an open challenge. Existing solutions often sacrifice accuracy or require extensive task-specific engineering. This motivates the exploration of collaborative, hybrid, or distributed inference strategies that combine the strengths of both local and remote resources—an emerging area exemplified by recent work (Narayan et al., 2025) \cite{Narayan2025Minions}, but with substantial open questions regarding efficiency, quality, and real-world deployability.
 
-\section{編譯}
-
-\subsection{編譯指令}
-
-編譯此 template 需要使用 \textbf{XeLaTeX} 和 \textbf{BibTeX} 兩個指令.
+\section{Problem Definition}
+The core challenge addressed in this thesis is the sub-optimal performance of SLMs when operating independently on resource-constrained edge devices. While SLMs are well-suited for simple tasks, their utility diminishes in real-world applications such as on-site industrial monitoring or interactive healthcare assistants, where complex reasoning and low latency are non-negotiable. In these scenarios, performance bottlenecks become critical pain points, manifesting in two major, quantifiable aspects:
 
 \begin{itemize}
-\item XeLaTeX (負責編譯 .tex 檔)\\
-xelatex -synctex=1 \textbf{-shell-escape} -interaction=nonstopmode \%.tex
-\item BibTeX (負責編譯 Bibliography .bib 檔)\\
-bibtex \%.aux
+    \item \textbf{Accuracy Degradation:} For complex reasoning tasks, the performance of SLMs is significantly lower than that of their cloud-based counterparts. For instance, in financial report analysis, an SLM might only achieve 60-70\% of the accuracy of state-of-the-art LLMs (DeepSeek-AI, 2024) \cite{DeepSeek-RL}, rendering it unreliable for mission-critical decisions.
+    \item \textbf{Latency Bottlenecks:} A common strategy to enhance edge capability is to distribute workloads across multiple devices. However, this introduces severe communication overhead. In preliminary tests using an RPC-based framework, we observed that the inference throughput dropped to merely 1/13th of its single-device performance (Gerganov, 2023) \cite{LlamaCpp-Issue}, making it unsuitable for real-time applications.
 \end{itemize}
 
-因大部分的 LaTeX editor 預設的編譯快速鍵是執行 latex, 所以我們需要修改預設的編譯指令.
-以下以\textbf{Texmaker}為例, 介紹如何修改:
+Existing approaches, whether employing distributed SLMs or hybrid local-cloud models, partially address these issues but often fail to strike an effective balance between accuracy, latency, and resource utilization. They typically force a trade-off, sacrificing real-time responsiveness for higher accuracy, or vice-versa, especially in environments with heterogeneous device capabilities and unstable networks.
+
+This thesis proposes a novel collaborative framework designed specifically to resolve this accuracy-latency trade-off. By dynamically decomposing complex tasks and intelligently allocating them between on-device SLMs and powerful cloud LLMs, our method emphasizes adaptive, fine-grained collaboration between heterogeneous agents. This approach directly tackles the multi-objective optimization challenge that existing work has yet to solve, aiming to deliver both high-fidelity reasoning and real-time performance in practical edge deployments.
+
+\section{Contributions}
+To overcome the limitations of on-device SLMs, this thesis introduces a collaborative multi-model framework that intelligently orchestrates tasks between edge devices and the cloud. Our primary contributions are threefold:
+
 \begin{enumerate}
-\item ``Options" $\rightarrow$ ``Configure Texmaker" $\rightarrow$ ``Commands\\
-修改 XeLaTeX 欄位, 加入 ``\textbf{-shell-escape}", 其結果如上所示.
-\item ``Options" $\rightarrow$ ``Configure Texmaker" $\rightarrow$ ``Quick Build"\\
-勾選 ``XeLaTeX + View PDF"
+    \item \textbf{Adaptive Granularity Task Decomposition:} We introduce an adaptive granularity scheduler that intelligently and dynamically decomposes user queries into sub-tasks and context chunks. This scheduler takes into account the heterogeneous hardware configurations and real-time resource constraints of the participating edge devices, optimizing the workload distribution for parallel execution and maximizing throughput.
 
+    \item \textbf{Collaborative Aggregation for Robust Output:} We design a master-worker aggregation mechanism where a master SLM collates and synthesizes intermediate results generated by worker SLMs. This collaborative process produces a final, coherent output, ensuring robustness and consistency even in the presence of partial or incomplete responses from worker nodes, thereby enhancing the overall reliability of the system.
+
+    \item \textbf{End-to-End Edge SLM Inference Pipeline:} We demonstrate a practical, fully on-device SLM inference pipeline that seamlessly integrates task decomposition, parallel execution, and result aggregation. This end-to-end implementation validates the feasibility of processing complex, LLM-scale tasks on a network of resource-constrained devices without any reliance on cloud resources, paving the way for more powerful and private edge AI applications.
 \end{enumerate}
 
-加入 ``\textbf{-shell-escape}" 是為了讓 XeLaTeX 在編譯時能根據目前執行平台的作業系統 (Windows/Linux/Mac OS X)自動選擇字型.
-% (各平台預設使用的字型請參考 Section~\ref{sec:fonts})
-當你和你的指導教授使用不同的作業系統編寫 LaTeX 時 (尤其當你們還使用 git 之類的版本管理工具來管理論文時), 相信這個小功能可以減少不少修改字型設定的困擾.
-
-\subsection{編譯 main.tex}
-
-\paragraph{編譯順序:} (\textbf{注意}: BibTeX 執行完後, 要執行 XeLaTeX 兩次)
-
-\hspace{2em} \textbf{XeLaTeX} $\rightarrow$ \textbf{BibTeX} $\rightarrow$ \textbf{XeLaTeX} $\rightarrow$ \textbf{XeLaTeX}
-
-\paragraph{使用 Command line:} 我提供了一個簡單的 Makefile, 請執行
-
-\hspace{2em} \textbf{\$ make}
-
-\paragraph{使用 LaTeX Editor:}
-Texmaker 提供了兩個編譯快速鍵: XeLaTeX (\textbf{F1}) 和 BibTeX (\textbf{F11}).
-在 Texmaker 中編譯請執行:
-
-\hspace{2em} \textbf{F1 $\rightarrow$ F11 $\rightarrow$ F1 $\rightarrow$ F1}
-
-\paragraph{小技巧:} 每次用 \textbf{Texmaker} 開啟 \textbf{main.tex} 後, 請執行 ``Options" $\rightarrow$ ``Define Current Document as `Master Document' ", 將\textbf{main.tex} 設成 XeLaTeX 編譯的主文件, 避免每次編譯時都要切換回 main.tex 才能編譯.
-
-\section{Synopsis}
-
-% Chapter~\ref{chapter:doccls} introduces thesis.cls document class.
-% Chapter~\ref{chapter:secorder} introduces section ordering.
-% Chapter~\ref{chapter:ref} and~\ref{chapter:fig} explain how to load citation, figures and tables (not completed).
+\section{Thesis Organization}
+The remainder of this thesis is structured as follows. Chapter 2 provides a review of related work in edge computing and language model inference. Chapter 3 details the design of our proposed collaborative architecture. Chapter 4 describes the implementation of the end-to-end pipeline. Chapter 5 presents the experimental evaluation and results. Finally, Chapter 6 concludes the thesis and discusses future research directions.

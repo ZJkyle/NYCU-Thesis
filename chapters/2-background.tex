@@ -1,3 +1,28 @@
-\chapter{Background}
+\chapter{Background and Related Work}
+\label{chapter:background}
 
-% 這裡撰寫背景內容 
+\section{Background}
+\subsection{The Rise and Challenges of Large Language Models}
+Large Language Models (LLMs), such as GPT and Gemini (Vaswani et al., 2017) \cite{Vaswani2017Attention}, have set new standards in natural language understanding, reasoning, and generation. Their remarkable performance has spurred applications in fields ranging from code generation to knowledge-intensive question answering. However, this progress comes at the cost of massive computational and memory requirements, making LLM inference expensive and inaccessible for latency- or privacy-sensitive applications. To address these limitations, the research community has pursued two main directions: (1) parameter-efficient training and model compression techniques such as knowledge distillation, pruning, and quantization, and (2) inference-stage system optimization including efficient attention mechanisms, KV cache optimization, and distributed deployment strategies.
+
+\subsection{Small Language Models (SLMs) and Edge Deployment}
+The development of SLMs—such as Llama-3.2-3B (Touvron et al., 2023) \cite{Touvron2023LLaMA} and DeepSeek-R1-Distill (DeepSeek-AI, 2024) \cite{DeepSeek-RL}—offers an alternative path by enabling on-device inference on resource-constrained hardware such as NVIDIA Jetson series and other embedded systems. Although SLMs can be deployed locally and address privacy and connectivity issues, their performance often lags behind LLMs, particularly in complex reasoning or long-context tasks. This challenge motivates the need for innovative techniques that can maximize the utility of SLMs at the edge while minimizing dependence on cloud-based LLMs. Collaborative strategies between local and remote models are increasingly viewed as promising solutions (Narayan et al., 2025) \cite{Narayan2025Minions}.
+
+\section{Related Work}
+\subsection{Model Compression and Parameter-Efficient Training}
+A major line of research has focused on reducing the size and computational requirements of LLMs while retaining most of their capabilities. Techniques such as knowledge distillation (DeepSeek-AI, 2024) \cite{DeepSeek-RL}, pruning, and quantization have produced a new generation of SLMs that are deployable on edge devices. The Open R1 project (HuggingFace, 2024) \cite{HuggingFace2024OpenR1} and Llama-3.1/3.2 series (Touvron et al., 2023) \cite{Touvron2023LLaMA} further demonstrate the effectiveness of these approaches, providing high-performing models with drastically reduced resource footprints.
+
+\subsection{System-Level and Inference Optimization}
+Beyond model-level compression, substantial advances have been made in system and inference optimization. The emergence of open-source inference engines such as llama.cpp (Gerganov, 2023) \cite{gerganov2023llamacpp} and vLLM (Kwon et al., 2023) \cite{Kwon2023vLLM} have made it feasible to run SLMs efficiently on consumer hardware. Recent work has also introduced KV cache compression such as Scissorhands (Liu et al., 2023) \cite{Liu2023Scissorhands} and PyramidInfer (Zhang et al., 2024) \cite{Zhang2024PyramidInfer} to minimize memory and latency bottlenecks during inference. Heavy-Hitter Oracle explores adaptive KV cache mechanisms, further reducing computational overhead.
+
+\subsection{Distributed and Collaborative Inference}
+As SLMs alone struggle to meet the demands of complex, data-intensive tasks, collaborative and distributed inference strategies have become an active research area. Luan et al. (2024) \cite{Luan2024Hierarchical} propose a hierarchical LLM framework, using cosine similarity for task decomposition and distributed execution among edge nodes. Similarly, Narayan et al. (2025) \cite{Narayan2025Minions} explore communication protocols that enable on-device SLMs and remote LLMs to cooperate via dynamic task decomposition and parallel subtask execution, significantly reducing cloud costs while maintaining high accuracy.
+
+\subsection{Task Decomposition and Orchestration}
+Task decomposition is a core method for leveraging SLMs efficiently. Amazon Science outlines strategies to split complex queries into targeted prompts suitable for SLMs. Although rule-based and similarity-based decomposition methods have been studied (Luan et al., 2024) \cite{Luan2024Hierarchical}, most lack robust empirical evaluation for end-to-end, multi-turn reasoning tasks.
+
+\subsection{Mixture-of-Agents and Aggregation Paradigms}
+A recent research frontier is the Mixture-of-Agents (MoA) paradigm, which seeks to enhance LLM capability and robustness by aggregating outputs from multiple models or repeated samples. Wang et al. (2024) \cite{Wang2024MoA} demonstrate that diverse agent outputs, when effectively aggregated, can improve reasoning and instruction-following accuracy. Zhang et al. (2024) \cite{Zhang2024SMoA} further introduce early stopping and role assignment to optimize throughput. However, Li et al. (2025) \cite{Li2025RethinkingMoA} challenge the efficacy of cross-model ensembling, showing that intra-model diversity (Self-MoA) often outperforms naive MoA, especially when agent quality varies. These insights motivate the selective aggregation and dynamic agent assignment mechanisms explored in this thesis.
+
+\section{Summary}
+In summary, while SLMs, system-level optimization, distributed inference, and MoA-based aggregation have each contributed to the democratization of advanced language modeling, their integration in resource-constrained, real-world edge environments remains under-explored. This thesis builds upon these advances by proposing an adaptive, collaborative SLM inference pipeline that aims to bridge the gap between local efficiency and LLM-scale performance. 
